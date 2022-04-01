@@ -1,0 +1,53 @@
+pipeline{
+    agent any
+    tools{
+        maven "maven3.8.5"
+    }
+    stages{
+    stage('1clone'){
+    steps{
+        sh "echo cloning the code"
+        git credentialsId: 'my-github-credentials', url: 'https://github.com/OnyekaOD/PayPal-devlopment.git'
+        sh "echo cloning successful"
+    }
+    }
+        stage('2build'){
+        steps{
+            sh "echo validating testing compiling and packaging"
+            sh "echo testing comlited and ready to package"
+            sh "mvn clean package"
+        }
+        }
+        stage('3quality'){
+        steps{
+            sh "echo conducting code quality"
+            sh "mvn sonar:sonar"
+        }
+        }
+        stage('4uploadingartifact'){
+        steps{
+            sh "echo uploading to nexus"
+            sh "mvn deploy"
+        }
+    }
+    stage('5deployment2uat'){
+        steps{
+            sh "echo deploying to tomcat"
+        sshagent(['pipline-job']) {
+    sh "scp -o StrictHostKeyChecking=no target/*.war ec2-user@172.31.9.207:/opt/tomcat9/webapps/uat.war"
+    }
+        }
+    }
+    stage('6deployment2prod'){
+        steps{
+            sh "echo deploying to tomcat"
+          sh "echo waiting for approvat"
+        timeout(time:10, unit:'MINUTES'){
+            input message: 'please approve for production'
+        }   
+       deploy adapters: [tomcat9(credentialsId: 'TOMCAT_CREDENTIALS', path: '', url: 'http://18.169.241.78:7000/')], contextPath: null, war: 'target/*.war'
+       sh "echo deployment successful"
+    }
+    }
+    }
+}
