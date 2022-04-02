@@ -1,0 +1,9 @@
+ node{
+     def mavenHome = tool name: 'maven3.8.5'
+ stage('1Clone'){
+      git credentialsId: 'my-github-credentials', url: 'https://github.com/OnyekaOD/PayPal-devlopment.git'
+    }
+    stage('2mavenbuild'){
+    sh "${mavenHome}/bin/mvn clean package"
+    }
+     }
