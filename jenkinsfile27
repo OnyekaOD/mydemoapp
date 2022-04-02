@@ -7,7 +7,7 @@ pipeline{
     stage('1clone'){
     steps{
         sh "echo cloning the code"
-        git credentialsId: 'fintech-GitHub-project', url: 'https://github.com/OnyekaOD/mydemoapp.git'
+       git credentialsId: 'fintech-GitHub-project', url: 'https://github.com/OnyekaOD/mydemoapp.git'
         sh "echo cloning successful"
     }
     }
