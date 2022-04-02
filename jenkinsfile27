@@ -18,6 +18,7 @@ pipeline{
             sh "mvn clean package"
         }
         }
+        /*
         stage('3quality'){
         steps{
             sh "echo conducting code quality"
@@ -49,5 +50,6 @@ pipeline{
        sh "echo deployment successful"
     }
     }
+    */
     }
 }
